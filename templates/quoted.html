@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}{{ stock.symbol }} quote{% endblock %}
+{% block main %}
+<div class="quote-result-card">
+    <a class="back-link" href="/quote">← Back to markets</a>
+    <div class="ticker-avatar large">{{ stock.symbol[:2] }}</div>
+    <span class="eyebrow">Live quote</span>
+    <h1>{{ stock.symbol }}</h1>
+    <p class="company-name">{{ stock.name }}</p>
+    <div class="quote-price">{{ stock.price | usd }}</div>
+    <p class="text-muted">Latest available market price per share</p>
+    <div class="d-flex justify-content-center gap-2 flex-wrap mt-4"><a class="btn btn-primary" href="/buy">Buy {{ stock.symbol }}</a><a class="btn btn-soft" href="/quote">Search another</a></div>
+</div>
+{% endblock %}

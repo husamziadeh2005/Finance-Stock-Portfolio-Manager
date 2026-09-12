@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block title %}Buy stock{% endblock %}
+{% block main %}
+<div class="form-layout">
+    <section class="form-card">
+        <span class="eyebrow">Trade</span><h1>Buy stock</h1><p class="page-subtitle">Enter a ticker and number of shares. We’ll show a live estimate before you submit.</p>
+        <form action="/buy" method="post" class="stack-form" id="tradeForm">
+            <div><label class="form-label" for="symbol">Stock symbol</label><input autocomplete="off" autofocus class="form-control app-input text-uppercase" id="symbol" name="symbol" placeholder="e.g. AAPL" type="text" maxlength="10" required></div>
+            <div><label class="form-label" for="shares">Shares</label><input class="form-control app-input" id="shares" name="shares" placeholder="1" type="number" min="1" step="1" required></div>
+            <div id="quotePreview" class="quote-preview d-none"></div>
+            <button class="btn btn-primary btn-lg w-100" type="submit">Review & buy</button>
+        </form>
+    </section>
+    <aside class="info-card"><span class="info-icon">✓</span><h3>Simple market order</h3><p>Your purchase uses the latest available market price when you submit the form.</p><div class="info-divider"></div><p class="small mb-0">Tip: use the Markets page to check a quote before trading.</p></aside>
+</div>
+{% endblock %}
+{% block scripts %}<script>initTradePreview("buy");</script>{% endblock %}

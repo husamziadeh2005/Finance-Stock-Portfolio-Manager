@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0f172a">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/favicon.ico" rel="icon">
+    <link href="/static/styles.css" rel="stylesheet">
+    <title>Finora · {% block title %}{% endblock %}</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg app-navbar sticky-top">
+        <div class="container-xl">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+                <span class="brand-mark">F</span>
+                <span>Finora</span>
+            </a>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                {% if session.get("user_id") %}
+                <ul class="navbar-nav mx-auto gap-lg-1 py-3 py-lg-0">
+                    <li class="nav-item"><a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="/">Overview</a></li>
+                    <li class="nav-item"><a class="nav-link {% if request.endpoint == 'quote' %}active{% endif %}" href="/quote">Markets</a></li>
+                    <li class="nav-item"><a class="nav-link {% if request.endpoint == 'buy' %}active{% endif %}" href="/buy">Buy</a></li>
+                    <li class="nav-item"><a class="nav-link {% if request.endpoint == 'sell' %}active{% endif %}" href="/sell">Sell</a></li>
+                    <li class="nav-item"><a class="nav-link {% if request.endpoint == 'history' %}active{% endif %}" href="/history">Activity</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2 pb-3 pb-lg-0">
+                    <button class="icon-button" type="button" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">◐</button>
+                    <a class="btn btn-soft" href="/addcash">+ Add cash</a>
+                    <div class="dropdown">
+                        <button class="user-chip dropdown-toggle" data-bs-toggle="dropdown" type="button">
+                            <span class="user-avatar">{{ current_user.username[0] | upper if current_user else 'U' }}</span>
+                            <span class="d-none d-md-inline">{{ current_user.username if current_user else 'Account' }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+                            <li><span class="dropdown-item-text small text-muted">Signed in as<br><strong class="text-body">{{ current_user.username if current_user else '' }}</strong></span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout">Log out</a></li>
+                        </ul>
+                    </div>
+                </div>
+                {% else %}
+                <div class="ms-auto d-flex gap-2 py-3 py-lg-0">
+                    <button class="icon-button" type="button" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+                    <a class="btn btn-link text-decoration-none text-body" href="/login">Log in</a>
+                    <a class="btn btn-primary" href="/register">Create account</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-wrap container-xl">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'success' if category == 'success' else 'primary' }} alert-dismissible fade show shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="page-shell container-xl">
+        {% block main %}{% endblock %}
+    </main>
+
+    <footer class="app-footer">
+        <div class="container-xl d-flex flex-column flex-sm-row justify-content-between gap-2">
+            <span>Finora — personal finance simulator</span>
+            <span>Built with Flask + SQLite</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/app.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

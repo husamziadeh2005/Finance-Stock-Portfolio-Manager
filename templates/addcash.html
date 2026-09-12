@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block title %}Add cash{% endblock %}
+{% block main %}
+<div class="form-layout single-focus">
+    <section class="form-card"><span class="eyebrow">Funds</span><h1>Add cash</h1><p class="page-subtitle">Top up your simulated account balance to make more trades.</p><form action="/addcash" method="post" class="stack-form"><div><label class="form-label" for="amount">Amount</label><div class="input-group money-input"><span class="input-group-text">$</span><input autocomplete="off" autofocus class="form-control app-input" id="amount" name="amount" placeholder="500.00" type="number" min="0.01" max="1000000" step="0.01" required></div></div><div class="quick-amounts"><button type="button" data-amount="100">+$100</button><button type="button" data-amount="500">+$500</button><button type="button" data-amount="1000">+$1,000</button></div><button class="btn btn-primary btn-lg w-100" type="submit">Add funds</button></form></section>
+</div>
+{% endblock %}
+{% block scripts %}<script>initQuickAmounts();</script>{% endblock %}

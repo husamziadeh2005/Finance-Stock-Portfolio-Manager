@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% block title %}Overview{% endblock %}
+{% block main %}
+<section class="hero-row d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3">
+    <div>
+        <span class="eyebrow">Portfolio overview</span>
+        <h1 class="page-title">Welcome back, {{ current_user.username if current_user else 'investor' }}.</h1>
+        <p class="page-subtitle mb-0">Track your balance, positions, and latest activity in one place.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a class="btn btn-soft" href="/quote">Get a quote</a>
+        <a class="btn btn-primary" href="/buy">Buy stock</a>
+    </div>
+</section>
+
+<section class="stats-grid">
+    <article class="metric-card metric-primary">
+        <div class="metric-label">Total balance</div>
+        <div class="metric-value">{{ grand_total | usd }}</div>
+        <div class="metric-note">Cash + market value</div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-label">Invested</div>
+        <div class="metric-value">{{ stocks_total | usd }}</div>
+        <div class="metric-note">Current market value</div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-label">Available cash</div>
+        <div class="metric-value">{{ cash | usd }}</div>
+        <div class="metric-note"><a href="/addcash">Add funds</a></div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-label">Positions</div>
+        <div class="metric-value">{{ positions_count }}</div>
+        <div class="metric-note">Active holdings</div>
+    </article>
+</section>
+
+<div class="dashboard-grid">
+    <section class="panel-card holdings-panel">
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">Holdings</span>
+                <h2>Your portfolio</h2>
+            </div>
+            <a class="text-link" href="/buy">Add position →</a>
+        </div>
+
+        {% if portfolio %}
+        <div class="table-responsive">
+            <table class="table app-table align-middle mb-0">
+                <thead><tr><th>Asset</th><th class="text-end">Shares</th><th class="text-end">Price</th><th class="text-end">Value</th></tr></thead>
+                <tbody>
+                {% for stock in portfolio %}
+                    <tr>
+                        <td>
+                            <div class="asset-cell">
+                                <div class="ticker-avatar">{{ stock.symbol[:2] }}</div>
+                                <div><strong>{{ stock.symbol }}</strong><small>{{ stock.name }}</small></div>
+                            </div>
+                        </td>
+                        <td class="text-end">{{ stock.shares }}</td>
+                        <td class="text-end">{{ stock.price | usd }}</td>
+                        <td class="text-end fw-semibold">{{ stock.total | usd }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">↗</div>
+            <h3>Build your first position</h3>
+            <p>Your purchased stocks will appear here with their live market value.</p>
+            <a class="btn btn-primary" href="/buy">Buy your first stock</a>
+        </div>
+        {% endif %}
+    </section>
+
+    <aside class="panel-card allocation-panel">
+        <div class="panel-heading"><div><span class="eyebrow">Allocation</span><h2>Portfolio mix</h2></div></div>
+        {% if portfolio %}
+        <div class="allocation-list">
+            {% for stock in portfolio[:5] %}
+            <div class="allocation-item">
+                <div class="d-flex justify-content-between gap-2"><span><strong>{{ stock.symbol }}</strong></span><span>{{ "%.1f"|format(stock.allocation) }}%</span></div>
+                <div class="allocation-track"><span style="width: {{ stock.allocation }}%"></span></div>
+            </div>
+            {% endfor %}
+            {% if cash > 0 %}
+            <div class="allocation-item">
+                <div class="d-flex justify-content-between gap-2"><span><strong>Cash</strong></span><span>{{ "%.1f"|format((cash / grand_total * 100) if grand_total else 0) }}%</span></div>
+                <div class="allocation-track cash"><span style="width: {{ (cash / grand_total * 100) if grand_total else 0 }}%"></span></div>
+            </div>
+            {% endif %}
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">Your allocation will appear after you buy stocks.</p>
+        {% endif %}
+    </aside>
+</div>
+
+<section class="panel-card mt-4">
+    <div class="panel-heading">
+        <div><span class="eyebrow">Recent activity</span><h2>Latest transactions</h2></div>
+        <a class="text-link" href="/history">View all →</a>
+    </div>
+    {% if recent_transactions %}
+    <div class="activity-list">
+        {% for transaction in recent_transactions %}
+        <div class="activity-row">
+            <div class="activity-icon {{ 'buy' if transaction.shares > 0 else 'sell' }}">{{ '↓' if transaction.shares > 0 else '↑' }}</div>
+            <div class="activity-copy"><strong>{{ 'Bought' if transaction.shares > 0 else 'Sold' }} {{ transaction.symbol }}</strong><small>{{ transaction.transacted }}</small></div>
+            <div class="activity-value text-end"><strong>{{ transaction.shares | abs }} shares</strong><small>@ {{ transaction.price | usd }}</small></div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted mb-0">No transactions yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

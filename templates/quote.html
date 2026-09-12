@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block title %}Markets{% endblock %}
+{% block main %}
+<section class="market-hero">
+    <span class="eyebrow">Market lookup</span><h1 class="page-title">Check a stock price.</h1><p class="page-subtitle">Search by ticker symbol to see the latest available market quote.</p>
+    <form action="/quote" method="post" class="quote-search" id="quoteSearchForm">
+        <input autocomplete="off" autofocus class="form-control app-input text-uppercase" id="quoteSymbol" name="symbol" placeholder="Search symbol, e.g. MSFT" type="text" maxlength="10" required>
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+    <div id="liveQuoteResult" class="live-quote-result d-none"></div>
+</section>
+<section class="quick-tips-grid">
+    <article class="tip-card"><span>01</span><h3>Find</h3><p>Enter a valid market ticker such as AAPL, MSFT, or NVDA.</p></article>
+    <article class="tip-card"><span>02</span><h3>Review</h3><p>Check the latest available price and company name.</p></article>
+    <article class="tip-card"><span>03</span><h3>Trade</h3><p>Move to Buy or Sell when you’re ready.</p></article>
+</section>
+{% endblock %}
+{% block scripts %}<script>initLiveQuoteSearch();</script>{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}Sell stock{% endblock %}
+{% block main %}
+<div class="form-layout">
+    <section class="form-card">
+        <span class="eyebrow">Trade</span><h1>Sell stock</h1><p class="page-subtitle">Choose one of your current positions and the number of shares to sell.</p>
+        {% if stocks %}
+        <form action="/sell" method="post" class="stack-form" id="tradeForm">
+            <div><label class="form-label" for="symbol">Position</label><select class="form-select app-input" id="symbol" name="symbol" required><option disabled selected value="">Choose a stock</option>{% for stock in stocks %}<option value="{{ stock.symbol }}">{{ stock.symbol }} — {{ stock.shares }} shares available</option>{% endfor %}</select></div>
+            <div><label class="form-label" for="shares">Shares to sell</label><input class="form-control app-input" id="shares" name="shares" placeholder="1" type="number" min="1" step="1" required></div>
+            <div id="quotePreview" class="quote-preview d-none"></div>
+            <button class="btn btn-danger btn-lg w-100" type="submit">Review & sell</button>
+        </form>
+        {% else %}
+        <div class="empty-state compact"><h3>No positions to sell</h3><p>Buy a stock first, then it will become available here.</p><a class="btn btn-primary" href="/buy">Buy stock</a></div>
+        {% endif %}
+    </section>
+    <aside class="info-card"><span class="info-icon">↗</span><h3>Sell from your holdings</h3><p>You can only sell shares you currently own. The proceeds are added to your cash balance.</p></aside>
+</div>
+{% endblock %}
+{% block scripts %}{% if stocks %}<script>initTradePreview("sell");</script>{% endif %}{% endblock %}

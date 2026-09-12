@@ -1,0 +1,5 @@
+{% extends "layout.html" %}
+{% block title %}Something went wrong{% endblock %}
+{% block main %}
+<div class="error-card"><div class="error-code">{{ code }}</div><span class="eyebrow">Request error</span><h1>{{ message }}</h1><p class="page-subtitle">Check your input and try again.</p><button class="btn btn-primary" onclick="history.back()" type="button">Go back</button></div>
+{% endblock %}

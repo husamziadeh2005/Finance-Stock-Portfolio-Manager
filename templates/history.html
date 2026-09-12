@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block title %}Activity{% endblock %}
+{% block main %}
+<section class="hero-row d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3">
+    <div><span class="eyebrow">Activity</span><h1 class="page-title">Transaction history</h1><p class="page-subtitle mb-0">A complete record of your simulated buys and sells.</p></div>
+    <div class="history-tools"><input class="form-control app-input" id="historySearch" placeholder="Search symbol..." type="search"><select class="form-select app-input" id="historyFilter"><option value="all">All activity</option><option value="buy">Buys</option><option value="sell">Sells</option></select></div>
+</section>
+<section class="panel-card mt-4">
+    {% if transactions %}
+    <div class="table-responsive"><table class="table app-table align-middle mb-0" id="historyTable"><thead><tr><th>Type</th><th>Asset</th><th class="text-end">Shares</th><th class="text-end">Price</th><th class="text-end">Total</th><th class="text-end">Date</th></tr></thead><tbody>
+    {% for transaction in transactions %}
+    <tr data-symbol="{{ transaction.symbol | lower }}" data-type="{{ 'buy' if transaction.shares > 0 else 'sell' }}"><td><span class="status-pill {{ 'buy' if transaction.shares > 0 else 'sell' }}">{{ 'Buy' if transaction.shares > 0 else 'Sell' }}</span></td><td><strong>{{ transaction.symbol }}</strong></td><td class="text-end">{{ transaction.shares | abs }}</td><td class="text-end">{{ transaction.price | usd }}</td><td class="text-end fw-semibold">{{ ((transaction.shares | abs) * transaction.price) | usd }}</td><td class="text-end text-muted">{{ transaction.transacted }}</td></tr>
+    {% endfor %}
+    </tbody></table></div>
+    <div id="historyEmpty" class="empty-state compact d-none"><h3>No matching transactions</h3><p>Try a different symbol or filter.</p></div>
+    {% else %}<div class="empty-state"><h3>No activity yet</h3><p>Your buys and sells will appear here.</p><a class="btn btn-primary" href="/buy">Make your first trade</a></div>{% endif %}
+</section>
+{% endblock %}
+{% block scripts %}<script>initHistoryFilter();</script>{% endblock %}
